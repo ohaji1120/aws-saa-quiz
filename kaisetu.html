@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AWS認定試験 間違い問題解説集</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        color: white;
+        padding: 40px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+
+      .header p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+      }
+
+      .content {
+        padding: 40px;
+      }
+
+      .category {
+        margin-bottom: 40px;
+      }
+
+      .category-title {
+        font-size: 1.8rem;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        padding: 15px 20px;
+        background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+        color: white;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .problems-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .problem-button {
+        background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+        color: white;
+        border: none;
+        padding: 15px 10px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+      }
+
+      .problem-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4);
+        background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+      }
+
+      .problem-button.active {
+        background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+        box-shadow: 0 8px 25px rgba(0, 184, 148, 0.4);
+      }
+
+      .problem-detail {
+        display: none;
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 30px;
+        margin-top: 20px;
+        border-left: 6px solid #e17055;
+        animation: slideDown 0.3s ease;
+      }
+
+      .problem-detail.active {
+        display: block;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .problem-title {
+        font-size: 1.4rem;
+        color: #2d3436;
+        margin-bottom: 20px;
+        font-weight: 600;
+      }
+
+      .scenario {
+        background: #e8f4fd;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border-left: 4px solid #74b9ff;
+      }
+
+      .scenario h4 {
+        color: #0984e3;
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+      }
+
+      .wrong-answer,
+      .correct-answer {
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+      }
+
+      .wrong-answer {
+        background: #ffe0e0;
+        border-left: 4px solid #ff6b6b;
+      }
+
+      .correct-answer {
+        background: #e8f5e8;
+        border-left: 4px solid #00b894;
+      }
+
+      .wrong-answer h4 {
+        color: #d63031;
+        margin-bottom: 10px;
+      }
+
+      .correct-answer h4 {
+        color: #00b894;
+        margin-bottom: 10px;
+      }
+
+      .memory-tip {
+        background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin-top: 15px;
+        font-weight: 600;
+        text-align: center;
+      }
+
+      .summary {
+        background: linear-gradient(135deg, #81ecec 0%, #74b9ff 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-top: 40px;
+      }
+
+      .summary h3 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+      }
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+      }
+
+      .summary-item {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+      }
+
+      .summary-item h4 {
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+      }
+
+      .close-button {
+        background: #ddd;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        float: right;
+        margin-bottom: 10px;
+        transition: all 0.3s ease;
+      }
+
+      .close-button:hover {
+        background: #bbb;
+      }
+
+      .icon {
+        font-size: 1.2rem;
+      }
+
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 2rem;
+        }
+
+        .content {
+          padding: 20px;
+        }
+
+        .problems-grid {
+          grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        }
+
+        .problem-detail {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🎯 AWS認定試験 間違い問題解説集</h1>
+        <p>実例で学ぶAWSサービスの正しい使い方</p>
+      </div>
+
+      <div class="content">
+        <!-- DynamoDB編 -->
+        <div class="category">
+          <h2 class="category-title">
+            <span class="icon">📊</span>
+            DynamoDB編
+          </h2>
+          <div class="problems-grid">
+            <button class="problem-button" data-problem="5">問題5</button>
+          </div>
+          <div id="problem-5" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-5')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">
+              DynamoDBのパフォーマンス分析をプロビジョンド容量に影響せずに実行する方法
+            </h3>
+
+            <div class="scenario">
+              <h4>🏪 シナリオ例: レストランチェーンの注文システム</h4>
+              <p>
+                <strong>営業中（リアルタイム）</strong
+                >：顧客の注文を高速処理<br />
+                <strong>営業後（分析）</strong
+                >：売上データを分析してメニュー改善
+              </p>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ 間違えた回答: Amazon AthenaのDynamoDBコネクタ</h4>
+              <p>
+                <strong>問題</strong>:
+                レストランの営業中にレジから売上データを直接分析するようなもの
+              </p>
+              <p><strong>結果</strong>: レジが重くなって注文処理が遅れる</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>✅ 正解: AWS GlueのDynamoDBエクスポートコネクター</h4>
+              <p>
+                <strong>理由</strong>:
+                営業後に売上データのコピーを作って、そのコピーで分析
+              </p>
+              <p><strong>メリット</strong>: 営業中のレジに全く影響しない</p>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方:
+              「ライブ配信中にバックアップから動画編集」みたいなイメージ
+            </div>
+          </div>
+        </div>
+
+        <!-- アーキテクチャ設計編 -->
+        <div class="category">
+          <h2 class="category-title">
+            <span class="icon">🏗️</span>
+            アーキテクチャ設計編
+          </h2>
+          <div class="problems-grid">
+            <button class="problem-button" data-problem="7">問題7</button>
+            <button class="problem-button" data-problem="12">問題12</button>
+          </div>
+
+          <div id="problem-7" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-7')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">
+              モノリシックアプリケーションのモダナイズ
+            </h3>
+
+            <div class="scenario">
+              <h4>🏪 シナリオ例: 個人商店→大型ショッピングモール化</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>
+                ❌ 間違えた回答: EC2 + RDS（構造化データ） + RDS（画像も）
+              </h4>
+              <p><strong>問題</strong>: 冷蔵庫に服も詰め込むようなもの</p>
+              <p><strong>結果</strong>: 画像データでデータベースがパンク</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>✅ 正解: ECS Fargate + RDS（データ） + S3（画像）</h4>
+              <p><strong>理由</strong>:</p>
+              <ul>
+                <li>
+                  <strong>ECS Fargate</strong>:
+                  店舗の管理人不要（サーバー管理不要）
+                </li>
+                <li><strong>RDS</strong>: 商品データは構造化データベース</li>
+                <li><strong>S3</strong>: 商品画像は専用の倉庫</li>
+              </ul>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「データは図書館、画像は美術館」
+            </div>
+          </div>
+
+          <div id="problem-12" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-12')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">ASP.NET → .NET モダナイズ</h3>
+
+            <div class="scenario">
+              <h4>🏭 シナリオ例: 古い工場のリニューアル</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ 間違えた回答: App Runner → ECS Fargate</h4>
+              <p>
+                <strong>問題</strong>: 引っ越し業者（App
+                Runner）が別の引っ越し業者（ECS）に丸投げ
+              </p>
+              <p><strong>結果</strong>: そんなサービスは存在しない</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>✅ 正解: App2Container → ECS Fargate</h4>
+              <p><strong>理由</strong>:</p>
+              <ul>
+                <li>
+                  <strong>App2Container</strong>: 古い機械をコンテナに梱包
+                </li>
+                <li><strong>ECS Fargate</strong>: 管理人不要の新工場</li>
+                <li><strong>CloudWatch</strong>: 生産状況を自動監視</li>
+              </ul>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「梱包業者で包んで、管理人不要の工場へ」
+            </div>
+          </div>
+        </div>
+
+        <!-- セキュリティ編 -->
+        <div class="category">
+          <h2 class="category-title">
+            <span class="icon">🔒</span>
+            セキュリティ編
+          </h2>
+          <div class="problems-grid">
+            <button class="problem-button" data-problem="8">問題8</button>
+            <button class="problem-button" data-problem="17">問題17</button>
+            <button class="problem-button" data-problem="21">問題21</button>
+            <button class="problem-button" data-problem="22">問題22</button>
+          </div>
+
+          <div id="problem-8" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-8')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">S3保存前のデータ暗号化</h3>
+
+            <div class="scenario">
+              <h4>📮 シナリオ例: 郵便配送の暗号化</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>
+                ❌ 間違えた回答: S3マネージドキーのクライアントサイド暗号化
+              </h4>
+              <p><strong>問題</strong>: 存在しない配送方法を選んだようなもの</p>
+              <p><strong>結果</strong>: 技術的に不可能</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>
+                ✅ 正解: カスタマーマネージドキーのクライアントサイド暗号化
+              </h4>
+              <p><strong>理由</strong>:</p>
+              <ul>
+                <li>家で荷物を梱包・暗号化</li>
+                <li>自分の鍵で封印</li>
+                <li>暗号化済みの状態で郵便局（S3）に持参</li>
+              </ul>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「家で包んで、自分の鍵で封印」
+            </div>
+          </div>
+
+          <div id="problem-17" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-17')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">金融データの暗号化（最小運用負荷）</h3>
+
+            <div class="scenario">
+              <h4>🏦 シナリオ例: 銀行の金庫システム</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ 間違えた回答: KMS + VPN</h4>
+              <p><strong>問題</strong>: 装甲車の代わりに専用道路を建設</p>
+              <p><strong>結果</strong>: 道路建設・管理の負担増</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>✅ 正解: KMS + ACM SSL/TLS</h4>
+              <p><strong>理由</strong>:</p>
+              <ul>
+                <li><strong>保存時</strong>: AWS銀行（KMS）の金庫</li>
+                <li><strong>転送時</strong>: 装甲車（SSL/TLS）で輸送</li>
+                <li><strong>管理</strong>: すべて銀行が管理</li>
+              </ul>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「銀行の金庫と装甲車、道路工事は不要」
+            </div>
+          </div>
+
+          <div id="problem-21" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-21')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">IAM Identity Center活用</h3>
+
+            <div class="scenario">
+              <h4>🏢 シナリオ例: 会社の入館システム</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ 間違えた回答: 個別IAMロール</h4>
+              <p><strong>問題</strong>: 部署ごとに別々の鍵管理システム</p>
+              <p><strong>結果</strong>: 管理が煩雑、運用負荷大</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>✅ 正解: IAM Identity Center</h4>
+              <p><strong>理由</strong>:</p>
+              <ul>
+                <li>1つの入館システムで全部管理</li>
+                <li>部署ごとにアクセス権限設定</li>
+                <li>人事異動時も簡単変更</li>
+              </ul>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「1つの入館システム、部署別権限、簡単変更」
+            </div>
+          </div>
+
+          <div id="problem-22" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-22')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">オンプレミス→S3の安全アクセス</h3>
+
+            <div class="scenario">
+              <h4>🏢 シナリオ例: 支店から本社の書庫アクセス</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ 間違えた回答: Secrets Managerにアクセスキー</h4>
+              <p><strong>問題</strong>: 金庫の鍵を別の金庫に保管</p>
+              <p><strong>結果</strong>: 二重管理で複雑</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>✅ 正解: IAM Roles Anywhere</h4>
+              <p><strong>理由</strong>:</p>
+              <ul>
+                <li>支店の社員証（証明書）で本社の書庫にアクセス</li>
+                <li>一時的な入館証を自動発行</li>
+                <li>社員証の信頼関係で認証</li>
+              </ul>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「社員証で一時入館証、金庫の鍵管理不要」
+            </div>
+          </div>
+        </div>
+
+        <!-- EMR & 権限管理編 -->
+        <div class="category">
+          <h2 class="category-title">
+            <span class="icon">🎯</span>
+            EMR & 権限管理編
+          </h2>
+          <div class="problems-grid">
+            <button class="problem-button" data-problem="9">問題9</button>
+            <button class="problem-button" data-problem="28">問題28</button>
+            <button class="problem-button" data-problem="55">問題55</button>
+          </div>
+
+          <div id="problem-9" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-9')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">
+              EMRでチーム別アクセス制御とIMDSv2無効化
+            </h3>
+
+            <div class="scenario">
+              <h4>🎓 シナリオ例: 大学の研究室共用PCシステム</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ 間違えた回答: VPCエンドポイント</h4>
+              <p>
+                <strong>問題</strong>:
+                門番を増やしただけで、利用者の権限管理なし
+              </p>
+              <p><strong>結果</strong>: 誰でも何でもアクセス可能</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>✅ 正解: EMRランタイムロール</h4>
+              <p><strong>理由</strong>:</p>
+              <ul>
+                <li>各学生に学生証（ランタイムロール）を配布</li>
+                <li>学部ごとに利用可能な図書館を制限</li>
+                <li>PCのメタデータ（個人情報）にアクセス禁止</li>
+              </ul>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「学生証で図書館制限、個人情報は見せない」
+            </div>
+          </div>
+
+          <div id="problem-28" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-28')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">組織全体のタグ強制</h3>
+
+            <div class="scenario">
+              <h4>📚 シナリオ例: 図書館の分類システム</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ 間違えた回答: タグポリシーで削除制御</h4>
+              <p><strong>問題</strong>: 分類ルールで行動制限はできない</p>
+              <p><strong>結果</strong>: ルール設定と行動制限は別機能</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>✅ 正解の組み合わせ:</h4>
+              <ol>
+                <li>
+                  <strong>タグポリシー</strong>:
+                  分類ルール（sensitive/nonsensitive）
+                </li>
+                <li>
+                  <strong>SCP</strong>: 分類なし本の登録禁止 + ラベル剥がし禁止
+                </li>
+              </ol>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「分類ルール + 行動制限 = 完璧な図書館管理」
+            </div>
+          </div>
+
+          <div id="problem-55" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-55')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">IAMアクセス許可のレビュー</h3>
+
+            <div class="scenario">
+              <h4>🔍 シナリオ例: 会社の権限監査</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ 間違えた回答: Amazon Inspector</h4>
+              <p>
+                <strong>問題</strong>:
+                セキュリティ脆弱性スキャナーでIAM権限は見れない
+              </p>
+              <p><strong>結果</strong>: 用途違いのツール</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>✅ 正解: IAM Access Analyzer</h4>
+              <p><strong>理由</strong>:</p>
+              <ul>
+                <li>IAM権限の過剰付与を自動検出</li>
+                <li>Organizations全体を一元分析</li>
+                <li>設定簡単、継続監視</li>
+              </ul>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「IAM分析はAccess Analyzer、Inspector違い」
+            </div>
+          </div>
+        </div>
+
+        <!-- コスト最適化編 -->
+        <div class="category">
+          <h2 class="category-title">
+            <span class="icon">💰</span>
+            コスト最適化編
+          </h2>
+          <div class="problems-grid">
+            <button class="problem-button" data-problem="42">問題42</button>
+            <button class="problem-button" data-problem="43">問題43</button>
+            <button class="problem-button" data-problem="45">問題45</button>
+            <button class="problem-button" data-problem="57">問題57</button>
+          </div>
+
+          <div id="problem-42" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-42')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">ウェブアプリのスケーラビリティ</h3>
+
+            <div class="scenario">
+              <h4>🍽️ シナリオ例: レストランの繁忙期対策</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ 間違えた回答: 固定2店舗 + 手動増員</h4>
+              <p><strong>問題</strong>: 繁忙期に2店舗固定、手動で対応</p>
+              <p><strong>結果</strong>: 柔軟性なし、コスト高</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>✅ 正解: Auto Scaling + Spot Fleet + ALB</h4>
+              <p><strong>理由</strong>:</p>
+              <ul>
+                <li><strong>Auto Scaling</strong>: 混雑時に自動で店員増員</li>
+                <li><strong>Spot Fleet</strong>: 時給の安いアルバイト活用</li>
+                <li><strong>ALB</strong>: お客様を空いてる席に案内</li>
+              </ul>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「自動増員、安いバイト、効率案内」
+            </div>
+          </div>
+
+          <div id="problem-43" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-43')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">S3暗号化のコスト最適化</h3>
+
+            <div class="scenario">
+              <h4>📚 シナリオ例: 図書館の貸出システム</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ 間違えた回答: VPN接続</h4>
+              <p>
+                <strong>問題</strong>:
+                本を借りるたびに専用の電話回線を引くようなもの
+              </p>
+              <p><strong>結果</strong>: 回線工事費が膨大</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>✅ 正解: S3バケットキー</h4>
+              <p><strong>理由</strong>:</p>
+              <ul>
+                <li>図書館全体で1つのマスターキー</li>
+                <li>本ごとに個別の鍵は作らない</li>
+                <li>暗号化レベルは維持、コストは削減</li>
+              </ul>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「図書館のマスターキー、本ごとの鍵は不要」
+            </div>
+          </div>
+
+          <div id="problem-45" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-45')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">EC2のスケジュール別コスト最適化</h3>
+
+            <div class="scenario">
+              <h4>🎓 シナリオ例: 学習塾の運営</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ 間違えた回答: 日曜日にSpotインスタンス</h4>
+              <p><strong>問題</strong>: 日曜日の授業中に突然中断</p>
+              <p><strong>結果</strong>: 生徒に迷惑、信頼失墜</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>✅ 正解:</h4>
+              <ul>
+                <li><strong>平日</strong>: 年間契約（スタンダードRI）</li>
+                <li><strong>日曜日</strong>: 時間契約（スケジュールRI）</li>
+              </ul>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「平日は年契約、日曜は時間契約、中断は絶対ダメ」
+            </div>
+          </div>
+
+          <div id="problem-57" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-57')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">コンテナの高可用性とコスト効率</h3>
+
+            <div class="scenario">
+              <h4>🏪 シナリオ例: 24時間営業のコンビニチェーン</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ 間違えた回答: 通常状態にFargate Spot</h4>
+              <p>
+                <strong>問題</strong>: 24時間営業なのに安いバイトが急に辞める
+              </p>
+              <p><strong>結果</strong>: 店舗が閉まって営業できない</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>✅ 正解: 通常状態にFargate、バーストにFargate Spot</h4>
+              <p><strong>理由</strong>:</p>
+              <ul>
+                <li>24時間営業は正社員で安定運営</li>
+                <li>繁忙期だけ安いバイトで補強</li>
+                <li>バイトが辞めても正社員で継続</li>
+              </ul>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「安定は正社員、バーストは安バイト」
+            </div>
+          </div>
+        </div>
+
+        <!-- ストレージ編 -->
+        <div class="category">
+          <h2 class="category-title">
+            <span class="icon">🗄️</span>
+            ストレージ編
+          </h2>
+          <div class="problems-grid">
+            <button class="problem-button" data-problem="26">問題26</button>
+            <button class="problem-button" data-problem="29">問題29</button>
+            <button class="problem-button" data-problem="39">問題39</button>
+          </div>
+
+          <div id="problem-26" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-26')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">複数EC2での共有ストレージ</h3>
+
+            <div class="scenario">
+              <h4>🏢 シナリオ例: オフィスの共有フォルダ</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ 間違えた回答: 複数EBSボリューム</h4>
+              <p>
+                <strong>問題</strong>: 個人のデスクの引き出しを共有しようとする
+              </p>
+              <p><strong>結果</strong>: 物理的に不可能</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>✅ 正解: Amazon EFS</h4>
+              <p><strong>理由</strong>:</p>
+              <ul>
+                <li>共有のファイルサーバー</li>
+                <li>全員が同時アクセス可能</li>
+                <li>高可用性で障害に強い</li>
+              </ul>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「みんなで使う共有サーバー、個人の引き出しじゃダメ」
+            </div>
+          </div>
+
+          <div id="problem-29" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-29')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">レガシーアプリのNFSストレージ移行</h3>
+
+            <div class="scenario">
+              <h4>📁 シナリオ例: 古いシステムのファイル共有</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ 間違えた回答: AWS DataSync</h4>
+              <p>
+                <strong>問題</strong>:
+                引っ越し業者をファイルサーバーとして使おうとする
+              </p>
+              <p><strong>結果</strong>: データ移行ツールで業務はできない</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>✅ 正解: Amazon EFS</h4>
+              <p><strong>理由</strong>:</p>
+              <ul>
+                <li>NFSプロトコルをネイティブサポート</li>
+                <li>アプリケーション変更不要</li>
+                <li>複数EC2から同時アクセス可能</li>
+              </ul>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「NFSならEFS、引っ越し業者は別用途」
+            </div>
+          </div>
+
+          <div id="problem-39" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-39')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">オンプレミス→S3の低レイテンシアクセス</h3>
+
+            <div class="scenario">
+              <h4>🏢 シナリオ例: 本社と倉庫の関係</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ 間違えた回答: Mountpoint for Amazon S3</h4>
+              <p><strong>問題</strong>: 必要な物を毎回倉庫まで取りに行く</p>
+              <p><strong>結果</strong>: 移動時間でパフォーマンス低下</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>✅ 正解: S3 File Gateway</h4>
+              <p><strong>理由</strong>:</p>
+              <ul>
+                <li>本社にミニ倉庫（キャッシュ）設置</li>
+                <li>よく使う物は手元に保管</li>
+                <li>たまに使う物だけ倉庫から取得</li>
+              </ul>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「手元にミニ倉庫、全部取りに行かない」
+            </div>
+          </div>
+        </div>
+
+        <!-- データベース編 -->
+        <div class="category">
+          <h2 class="category-title">
+            <span class="icon">🗃️</span>
+            データベース編
+          </h2>
+          <div class="problems-grid">
+            <button class="problem-button" data-problem="38">問題38</button>
+            <button class="problem-button" data-problem="53">問題53</button>
+            <button class="problem-button" data-problem="61">問題61</button>
+            <button class="problem-button" data-problem="63">問題63</button>
+          </div>
+
+          <div id="problem-38" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-38')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">グローバルゲームのDynamoDB設計</h3>
+
+            <div class="scenario">
+              <h4>🎮 シナリオ例: 世界展開のゲームセンター</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ 間違えた回答: オンデマンド + グローバルテーブル</h4>
+              <p><strong>問題</strong>: 予測可能なのに従量課金</p>
+              <p><strong>結果</strong>: コスト増大</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>✅ 正解: グローバルテーブル + プロビジョンドキャパシティ</h4>
+              <p><strong>理由</strong>:</p>
+              <ul>
+                <li>
+                  <strong>グローバルテーブル</strong>: 世界各地に支店、自動同期
+                </li>
+                <li>
+                  <strong>プロビジョンドキャパシティ</strong>:
+                  ゲーム時間は予測可能
+                </li>
+              </ul>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「世界同期、予測可能なら定額プラン」
+            </div>
+          </div>
+
+          <div id="problem-53" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-53')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">
+              モノリシックアプリのパフォーマンス改善
+            </h3>
+
+            <div class="scenario">
+              <h4>🏪 シナリオ例: 老舗商店の効率化</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ 間違えた回答: Auto Scaling（最大2）+ RDSリサイズ</h4>
+              <p>
+                <strong>問題</strong>: 1人でしか作業できない商店を2店舗にする
+              </p>
+              <p><strong>結果</strong>: システム設計に反する</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>
+                ✅ 正解: EC2リサイズ + Auto Scaling（最大1） + RDSリードレプリカ
+              </h4>
+              <p><strong>理由</strong>:</p>
+              <ul>
+                <li>店主のスキルアップ（EC2リサイズ）</li>
+                <li>1店舗維持（Auto Scaling最大1）</li>
+                <li>読み取り専用のカウンター追加（リードレプリカ）</li>
+              </ul>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「スキルアップ、1店舗維持、読み取り専用カウンター」
+            </div>
+          </div>
+
+          <div id="problem-61" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-61')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">単一障害点の解決</h3>
+
+            <div class="scenario">
+              <h4>🍽️ シナリオ例: レストランの予約システム</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ 間違えた回答: 新規作成して手動移行</h4>
+              <p><strong>問題</strong>: 支店を新築して手動でお客様データ移動</p>
+              <p><strong>結果</strong>: 時間とコストの無駄</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>✅ 正解: RDSマルチAZ</h4>
+              <p><strong>理由</strong>:</p>
+              <ul>
+                <li>メイン店舗が故障時、自動で支店に切り替え</li>
+                <li>設定変更だけ、アプリ変更不要</li>
+                <li>お客様は気づかず継続利用</li>
+              </ul>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「既存店舗の自動バックアップ、新築は不要」
+            </div>
+          </div>
+
+          <div id="problem-63" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-63')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">
+              ウェブアプリの高可用性・スケーラビリティ化
+            </h3>
+
+            <div class="scenario">
+              <h4>🌐 シナリオ例: 個人商店のECサイト拡張</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ よくある間違い: クロスリージョンの過剰設計</h4>
+              <p><strong>問題</strong>: 海外展開が不要なのに世界中に支店建設</p>
+              <p><strong>結果</strong>: コストと複雑性の増大</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>✅ 正解の組み合わせ:</h4>
+              <ul>
+                <li>
+                  <strong>Auto Scaling + ALB</strong>: 複数AZにEC2を自動拡張
+                </li>
+                <li>
+                  <strong>Aurora MySQL</strong>: 高可用性DB + リードレプリカ
+                </li>
+              </ul>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「地域内拡張で十分、世界展開は後から」
+            </div>
+          </div>
+        </div>
+
+        <!-- ネットワーク編 -->
+        <div class="category">
+          <h2 class="category-title">
+            <span class="icon">🌐</span>
+            ネットワーク・その他編
+          </h2>
+          <div class="problems-grid">
+            <button class="problem-button" data-problem="14">問題14</button>
+            <button class="problem-button" data-problem="33">問題33</button>
+            <button class="problem-button" data-problem="49">問題49</button>
+            <button class="problem-button" data-problem="60">問題60</button>
+          </div>
+
+          <div id="problem-14" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-14')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">ALBのセキュリティグループ設定</h3>
+
+            <div class="scenario">
+              <h4>🏨 シナリオ例: ホテルのフロントデスク</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ よくある間違い:</h4>
+              <ul>
+                <li>客室からフロントへの連絡許可 → 逆方向なので不要</li>
+                <li>全世界への案内許可 → 範囲が広すぎて危険</li>
+              </ul>
+            </div>
+
+            <div class="correct-answer">
+              <h4>✅ 正解の組み合わせ:</h4>
+              <ol>
+                <li>
+                  <strong>443番ポートで世界中から受付</strong>
+                  (インターネット→ALB)
+                </li>
+                <li><strong>客室への案内は443番ポート</strong> (ALB→EC2)</li>
+                <li>
+                  <strong>客室の安全点検は8443番ポート</strong> (ALB→EC2
+                  ヘルスチェック)
+                </li>
+              </ol>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「フロントは受付と案内と点検、客室からの逆連絡は不要」
+            </div>
+          </div>
+
+          <div id="problem-33" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-33')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">Kubernetesの運用負荷最小化</h3>
+
+            <div class="scenario">
+              <h4>🏭 シナリオ例: 工場の管理体制</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ 間違えた回答: マネージドノードグループ</h4>
+              <p><strong>問題</strong>: まだ工場の設備管理が必要</p>
+              <p><strong>結果</strong>: 運用負荷が残る</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>✅ 正解: AWS Fargate</h4>
+              <p><strong>理由</strong>:</p>
+              <ul>
+                <li>完全に管理人不要の工場</li>
+                <li>設備も電気も全部お任せ</li>
+                <li>製品作成だけに集中可能</li>
+              </ul>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「運用ゼロならFargate、設備管理は嫌」
+            </div>
+          </div>
+
+          <div id="problem-49" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-49')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">EKS PodのAWSサービス別アクセス制御</h3>
+
+            <div class="scenario">
+              <h4>🏢 シナリオ例: 部署別の業務システムアクセス</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ 間違えた回答: EC2インスタンスプロファイル + RBAC</h4>
+              <p>
+                <strong>問題</strong>:
+                建物の入館証を全員同じにして、Kubernetes内の席だけ制限
+              </p>
+              <p><strong>結果</strong>: AWSリソースは全員アクセス可能</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>
+                ✅ 正解: 個別Kubernetesサービスアカウント + フルアクセスポリシー
+              </h4>
+              <p><strong>理由</strong>:</p>
+              <ul>
+                <li>UI部署→DynamoDB専用の社員証</li>
+                <li>データ部署→S3専用の社員証</li>
+                <li>IRSAで細かい権限管理</li>
+              </ul>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「部署別社員証、業務別アクセス権」
+            </div>
+          </div>
+
+          <div id="problem-60" class="problem-detail">
+            <button class="close-button" onclick="closeProblem('problem-60')">
+              ✕ 閉じる
+            </button>
+            <h3 class="problem-title">EKSポッドのカスタムサブネット設定</h3>
+
+            <div class="scenario">
+              <h4>🏘️ シナリオ例: 企業の社宅システム</h4>
+            </div>
+
+            <div class="wrong-answer">
+              <h4>❌ 間違えた回答: Transit Gateway</h4>
+              <p>
+                <strong>問題</strong>:
+                高速道路を建設して社宅の住所を決めようとする
+              </p>
+              <p><strong>結果</strong>: 用途が違う</p>
+            </div>
+
+            <div class="correct-answer">
+              <h4>✅ 正解: Amazon VPC CNIプラグイン</h4>
+              <p><strong>理由</strong>:</p>
+              <ul>
+                <li>VPC内の特定の住宅街をアプリ用に指定</li>
+                <li>各コンテナにVPCの住所を直接割り当て</li>
+                <li>VPCのセキュリティ機能で通信制御</li>
+              </ul>
+            </div>
+
+            <div class="memory-tip">
+              💡 覚え方: 「VPC住宅街、CNIで住所配布」
+            </div>
+          </div>
+        </div>
+
+        <!-- まとめ -->
+        <div class="summary">
+          <h3>🎯 まとめ：覚えやすいコツ</h3>
+          <div class="summary-grid">
+            <div class="summary-item">
+              <h4>🏗️ サービス選択の原則</h4>
+              <ul>
+                <li><strong>管理負荷最小</strong> → マネージドサービス優先</li>
+                <li>
+                  <strong>コスト最適化</strong> →
+                  予測可能なら定額、バーストはSpot
+                </li>
+                <li>
+                  <strong>セキュリティ</strong> → 適切な場所で適切な暗号化
+                </li>
+                <li>
+                  <strong>スケーラビリティ</strong> → Auto Scaling +
+                  ロードバランサー
+                </li>
+              </ul>
+            </div>
+            <div class="summary-item">
+              <h4>❌ 間違いパターン</h4>
+              <ul>
+                <li><strong>存在しない組み合わせ</strong>: App Runner → ECS</li>
+                <li>
+                  <strong>用途違い</strong>: Network Access Analyzer でIAM分析
+                </li>
+                <li><strong>過剰設計</strong>: 単純な要件に複雑な解決策</li>
+                <li><strong>コスト無視</strong>: 高性能だが高額な選択</li>
+              </ul>
+            </div>
+            <div class="summary-item">
+              <h4>✅ 成功の鍵</h4>
+              <ul>
+                <li><strong>要件を正確に理解</strong></li>
+                <li><strong>サービスの特性を把握</strong></li>
+                <li><strong>最小限の変更で最大効果</strong></li>
+                <li><strong>運用負荷を常に考慮</strong></li>
+              </ul>
+            </div>
+            <div class="summary-item">
+              <h4>🎖️ 最終アドバイス</h4>
+              <p>
+                <strong
+                  >「シンプルで、安全で、スケーラブルで、コスト効率的」</strong
+                ><br />
+                これがAWS設計の基本！<br /><br />
+                実際のビジネスシーンに置き換えて理解することで、技術的な概念も身近になります。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // 現在開いている問題を追跡
+      let currentProblem = null;
+
+      // 問題ボタンのクリックイベント
+      document.querySelectorAll(".problem-button").forEach((button) => {
+        button.addEventListener("click", function () {
+          const problemId = this.getAttribute("data-problem");
+          const problemDetail = document.getElementById(`problem-${problemId}`);
+
+          // 他の問題を閉じる
+          if (currentProblem && currentProblem !== problemDetail) {
+            currentProblem.classList.remove("active");
+            document
+              .querySelector(
+                `[data-problem="${currentProblem.id.split("-")[1]}"]`
+              )
+              .classList.remove("active");
+          }
+
+          // 現在の問題をトグル
+          if (problemDetail.classList.contains("active")) {
+            problemDetail.classList.remove("active");
+            this.classList.remove("active");
+            currentProblem = null;
+          } else {
+            problemDetail.classList.add("active");
+            this.classList.add("active");
+            currentProblem = problemDetail;
+
+            // スムーズスクロール
+            setTimeout(() => {
+              problemDetail.scrollIntoView({
+                behavior: "smooth",
+                block: "nearest",
+              });
+            }, 100);
+          }
+        });
+      });
+
+      // 問題を閉じる関数
+      function closeProblem(problemId) {
+        const problemDetail = document.getElementById(problemId);
+        const problemNumber = problemId.split("-")[1];
+        const button = document.querySelector(
+          `[data-problem="${problemNumber}"]`
+        );
+
+        problemDetail.classList.remove("active");
+        button.classList.remove("active");
+        currentProblem = null;
+      }
+
+      // ESCキーで問題を閉じる
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && currentProblem) {
+          const problemNumber = currentProblem.id.split("-")[1];
+          closeProblem(currentProblem.id);
+        }
+      });
+
+      // 進捗状況を保存（ローカルストレージ使用不可のため、セッション内のみ）
+      let completedProblems = new Set();
+
+      // 問題完了マーク（オプション機能）
+      function markProblemCompleted(problemNumber) {
+        completedProblems.add(problemNumber);
+        const button = document.querySelector(
+          `[data-problem="${problemNumber}"]`
+        );
+        if (button) {
+          button.style.background =
+            "linear-gradient(135deg, #00b894 0%, #00a085 100%)";
+          button.innerHTML += " ✓";
+        }
+      }
+
+      // カテゴリー別の問題数表示
+      document.addEventListener("DOMContentLoaded", function () {
+        const categories = document.querySelectorAll(".category");
+        categories.forEach((category) => {
+          const problemButtons = category.querySelectorAll(".problem-button");
+          const categoryTitle = category.querySelector(".category-title");
+          const problemCount = problemButtons.length;
+
+          if (categoryTitle && problemCount > 0) {
+            const countSpan = document.createElement("span");
+            countSpan.style.fontSize = "0.8em";
+            countSpan.style.opacity = "0.8";
+            countSpan.style.marginLeft = "10px";
+            countSpan.textContent = `(${problemCount}問)`;
+            categoryTitle.appendChild(countSpan);
+          }
+        });
+
+        // 全体の問題数表示
+        const totalProblems =
+          document.querySelectorAll(".problem-button").length;
+        const headerP = document.querySelector(".header p");
+        if (headerP) {
+          headerP.textContent = `実例で学ぶAWSサービスの正しい使い方 - 全${totalProblems}問`;
+        }
+      });
+
+      // スムーズなアニメーション効果
+      function addRippleEffect(element) {
+        element.addEventListener("click", function (e) {
+          const ripple = document.createElement("span");
+          const rect = element.getBoundingClientRect();
+          const size = Math.max(rect.width, rect.height);
+          const x = e.clientX - rect.left - size / 2;
+          const y = e.clientY - rect.top - size / 2;
+
+          ripple.style.width = ripple.style.height = size + "px";
+          ripple.style.left = x + "px";
+          ripple.style.top = y + "px";
+          ripple.classList.add("ripple");
+
+          element.appendChild(ripple);
+
+          setTimeout(() => {
+            ripple.remove();
+          }, 600);
+        });
+      }
+
+      // リップル効果のCSS追加
+      const style = document.createElement("style");
+      style.textContent = `
+            .problem-button {
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .ripple {
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.6);
+                transform: scale(0);
+                animation: ripple-animation 0.6s linear;
+                pointer-events: none;
+            }
+            
+            @keyframes ripple-animation {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+      document.head.appendChild(style);
+
+      // すべての問題ボタンにリップル効果を追加
+      document.querySelectorAll(".problem-button").forEach(addRippleEffect);
+    </script>
+  </body>
+</html>
