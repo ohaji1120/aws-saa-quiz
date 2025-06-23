@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS SAA 試験問題解説アプリ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .quiz-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 30px;
+            margin-bottom: 20px;
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .quiz-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .question-number {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .difficulty {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .difficulty.normal {
+            background: #e8f5e8;
+            color: #2d5a2d;
+        }
+        
+        .difficulty.hard {
+            background: #ffe8e8;
+            color: #8b0000;
+        }
+        
+        .question-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: #2c3e50;
+        }
+        
+        .options {
+            margin-bottom: 20px;
+        }
+        
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f3ff;
+        }
+        
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        
+        .option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        
+        .option.user-selected {
+            background: #cce7ff;
+            border-color: #007bff;
+        }
+        
+        .option-label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .option-text {
+            line-height: 1.5;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: transform 0.2s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn.secondary {
+            background: linear-gradient(45deg, #6c757d, #495057);
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+        }
+        
+        .btn.secondary:hover {
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+        }
+        
+        .explanation {
+            background: #e8f4fd;
+            border-left: 4px solid #007bff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .explanation.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .explanation h3 {
+            color: #007bff;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .explanation-content {
+            line-height: 1.6;
+        }
+        
+        .score {
+            text-align: center;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .score h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 2rem;
+        }
+        
+        .score-details {
+            font-size: 1.1rem;
+            color: #666;
+        }
+        
+        .progress-bar {
+            background: #e9ecef;
+            height: 8px;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        .problem-selector {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .problem-btn {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            color: #495057;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .problem-btn:hover {
+            background: #e9ecef;
+        }
+        
+        .problem-btn.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .problem-btn.solved {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .quiz-card {
+                padding: 20px;
+            }
+            
+            .controls {
+                justify-content: center;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .problem-grid {
+                grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            }
+            
+            .problem-btn {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 AWS SAA 試験対策</h1>
+            <p>Solutions Architect Associate 解説付き問題集</p>
+        </div>
+        
+        <div class="score">
+            <h2>学習進捗</h2>
+            <div class="score-details">
+                正解数: <span id="correct-count">0</span> / 解答済み: <span id="answered-count">0</span> / 全問題: <span id="total-count">25</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+        
+        <div class="problem-selector">
+            <h3>📚 問題を選択</h3>
+            <div class="problem-grid" id="problem-grid"></div>
+        </div>
+        
+        <div class="quiz-card" id="quiz-card">
+            <!-- 問題がここに表示されます -->
+        </div>
+        
+        <div class="navigation">
+            <button class="btn secondary" onclick="previousQuestion()" id="prev-btn">⬅️ 前の問題</button>
+            <button class="btn" onclick="nextQuestion()" id="next-btn">次の問題 ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        // 問題データ
+        const questions = [
+            {
+                id: 5,
+                text: "ある企業は、デバイスから受信したデータを保存するためにAmazon DynamoDBテーブルを使用しています。企業は、顧客デバイスデータの性能メトリクスを毎日計算したいと考えています。ソリューションは、テーブルのプロビジョンド読み取りおよび書き込み容量に最小限の影響を与える必要があります。",
+                options: [
+                    {
+                        label: "A",
+                        text: "Amazon AthenaのDynamoDBコネクタを使用して、Amazon Athena SQLクエリでパフォーマンスメトリクスを計算し、定期的なスケジュールで実行します。",
+                        explanation: "DynamoDBを直接クエリするため、大量の読み取り容量を消費し、本番アプリケーションに影響を与える可能性があります。"
+                    },
+                    {
+                        label: "B",
+                        text: "AWS GlueのDynamoDBエクスポートコネクターを使用して、AWS Glueジョブでパフォーマンスメトリクスを計算し、定期的なスケジュールで実行します。",
+                        explanation: "DynamoDBデータをS3にエクスポートしてから処理するため、テーブルのプロビジョンド容量にほとんど影響を与えません。これが最適解です。",
+                        correct: true
+                    },
+                    {
+                        label: "C",
+                        text: "Amazon RedshiftのCOPYコマンドを使用して、パフォーマンスメトリクスを計算し、定期的なスケジュールで実行します。",
+                        explanation: "データインポート時に読み取り容量を消費し、Redshiftクラスタの維持コストも発生します。"
+                    },
+                    {
+                        label: "D",
+                        text: "Apache Hive外部テーブルを使用したAmazon EMRジョブでパフォーマンスメトリクスを計算し、定期的なスケジュールで実行します。",
+                        explanation: "直接クエリまたはEMRの複雑なセットアップが必要で、運用負担が大きくなります。"
+                    }
+                ]
+            },
+            {
+                id: 7,
+                text: "グローバルなEコマース企業は、モノリシックアーキテクチャから増加する製品データの量を管理するためのスケーラブルでモジュラー型のサービスアーキテクチャに移行する必要があります。構造化されたデータベーススキーマを維持し、製品データと製品画像を保存する必要があります。",
+                options: [
+                    {
+                        label: "A",
+                        text: "Auto Scalingグループ内のAmazon EC2インスタンスを使用してコンテナ化されたアプリケーションをデプロイし、Amazon RDS DBインスタンスを使用して製品データと製品画像を保存します。",
+                        explanation: "RDSは画像のような非構造化データには適さず、EC2の管理負担が発生します。"
+                    },
+                    {
+                        label: "B",
+                        text: "AWS Lambda関数を使用してモノリシックアプリケーションを管理し、Amazon DynamoDBを使用して製品データと製品画像を保存します。",
+                        explanation: "大規模なリファクタリングが必要で、DynamoDBは構造化スキーマの維持に適していません。"
+                    },
+                    {
+                        label: "C",
+                        text: "Amazon EKSにAmazon EC2デプロイを使用してコンテナ化アプリケーションをデプロイし、Amazon Auroraクラスターで製品データを保存し、製品画像をAmazon S3 Glacier Deep Archiveに保存します。",
+                        explanation: "EKSの管理が複雑で、Glacier Deep Archiveは画像の即時アクセスに不向きです。"
+                    },
+                    {
+                        label: "D",
+                        text: "Amazon ECSにAWS Fargateを使用してコンテナ化アプリケーションをデプロイし、マルチAZ構成のAmazon RDSで製品データを保存し、製品画像をAmazon S3バケットに保存します。",
+                        explanation: "Fargateでサーバー管理不要、RDSで構造化スキーマ対応、S3で画像保存最適化。運用オーバーヘッドが最小の理想的な構成です。",
+                        correct: true
+                    }
+                ]
+            },
+            {
+                id: 8,
+                text: "ある企業は、機密データをAmazon S3に保存する前に暗号化する必要があります。データがS3に保存される前に暗号化が完了している必要があります。",
+                options: [
+                    {
+                        label: "A",
+                        text: "カスタマーマネージドキーを使用したクライアントサイド暗号化でデータを暗号化します。",
+                        explanation: "データがS3にアップロードされる前にクライアント側で暗号化が完了し、要件を満たします。これが正解です。",
+                        correct: true
+                    },
+                    {
+                        label: "B",
+                        text: "AWS KMSキーによるサーバーサイド暗号化（SSE-KMS）を使用してデータを暗号化します。",
+                        explanation: "S3にアップロード後にAWSが暗号化するため、「保存前に暗号化」の要件に適合しません。"
+                    },
+                    {
+                        label: "C",
+                        text: "お客様が用意したキーによるサーバーサイド暗号化（SSE-C）を使用してデータを暗号化します。",
+                        explanation: "S3でのサーバーサイド暗号化のため、「保存前に暗号化」要件を満たしません。"
+                    },
+                    {
+                        label: "D",
+                        text: "Amazon S3マネージドキーによるクライアントサイド暗号化でデータを暗号化します。",
+                        explanation: "S3マネージドキーはサーバーサイド暗号化専用で、クライアントサイド暗号化には使用できません。"
+                    }
+                ]
+            },
+            {
+                id: 9,
+                text: "ある企業は、複数のチームが使用するAmazon EMRクラスターを作成したいと考えています。各チームのビッグデータワークロードが必要なAWSサービスにのみアクセスでき、EC2インスタンスのIMDSv2にアクセスできないようにする必要があります。",
+                options: [
+                    {
+                        label: "A",
+                        text: "チームが必要とする各AWSサービスに対してインターフェースVPCエンドポイントを構成し、必要なエンドポイントを使用してワークロードを送信します。",
+                        explanation: "VPCエンドポイントはプライベートアクセスを提供しますが、チーム別の細かいアクセス制御やIMDSv2無効化には対応していません。"
+                    },
+                    {
+                        label: "B",
+                        text: "EMRランタイムロールを作成し、クラスターがランタイムロールを使用するように構成し、ランタイムロールを使用してワークロードを送信します。",
+                        explanation: "チームごとに異なるIAMロールを割り当て、必要なサービスへのアクセスを制御でき、IMDSv2も無効化できます。これが正解です。",
+                        correct: true
+                    },
+                    {
+                        label: "C",
+                        text: "各チームに必要な権限を持つEC2 IAMインスタンスプロファイルを作成し、インスタンスプロファイルを使用してワークロードを送信します。",
+                        explanation: "クラスター全体に一律の権限が適用され、チーム別の異なるアクセス制御ができません。"
+                    },
+                    {
+                        label: "D",
+                        text: "EnableApplicationScopedIAMRoleオプションをfalseに設定したEMRセキュリティ構成を作成し、セキュリティ構成を使用してワークロードを送信します。",
+                        explanation: "アプリケーション別IAMロールを無効化するだけで、チーム別アクセス制御やIMDSv2無効化には関係ありません。"
+                    }
+                ]
+            },
+            {
+                id: 12,
+                text: "ある企業は、Linuxマシン上でASP.NETを使用したオンプレミスアプリケーションを.NETにモダナイズし、コンテナ上で実行してCloudWatchメトリクスに基づいてスケーリングしたいと考えています。運用保守活動にかける時間を削減したいと考えています。",
+                options: [
+                    {
+                        label: "A",
+                        text: "AWS App2Containerを使用してアプリケーションをコンテナ化し、CloudFormationテンプレートでAmazon ECSのAWS Fargateにデプロイします。",
+                        explanation: "App2ContainerでASP.NETを効率的にコンテナ化し、Fargateでサーバー管理不要のスケーリングを実現。運用オーバーヘッドが最小です。",
+                        correct: true
+                    },
+                    {
+                        label: "B",
+                        text: "AWS App2Containerを使用してアプリケーションをコンテナ化し、CloudFormationテンプレートでAmazon ECSのAmazon EC2インスタンスにデプロイします。",
+                        explanation: "EC2インスタンスの管理（パッチ適用など）が必要で、運用オーバーヘッドが増加します。"
+                    },
+                    {
+                        label: "C",
+                        text: "AWS App Runnerを使用してアプリケーションをコンテナ化し、App RunnerでAmazon ECSのAWS Fargateにデプロイします。",
+                        explanation: "App RunnerはECS Fargateへの直接デプロイをサポートしないため、技術的に誤りです。"
+                    },
+                    {
+                        label: "D",
+                        text: "AWS App Runnerを使用してアプリケーションをコンテナ化し、App RunnerでAmazon EKSのAmazon EC2インスタンスにデプロイします。",
+                        explanation: "App RunnerはEKSへの直接デプロイをサポートせず、EKSは運用オーバーヘッドが大きいです。"
+                    }
+                ]
+            },
+            {
+                id: 14,
+                text: "ある企業は、ALBがパブリックインターネットからHTTPSトラフィックを受信し、EC2インスタンスにポート443でHTTPSトラフィックのみを送信し、ポート8443でHTTPSヘルスチェックを実行する必要があります。ALBのセキュリティグループ構成を選択してください。（3つ選択）",
+                options: [
+                    {
+                        label: "A",
+                        text: "ポート443で0.0.0.0/0からのHTTPSインバウンドトラフィックを許可します。",
+                        explanation: "パブリックインターネットからのHTTPSトラフィックをALBが受信するために必要です。✅ 正解",
+                        correct: true
+                    },
+                    {
+                        label: "B",
+                        text: "ポート443で0.0.0.0/0へのすべてのアウトバウンドトラフィックを許可します。",
+                        explanation: "特定のEC2インスタンスへの送信ではなく、広すぎるルールでセキュリティ上不適切です。"
+                    },
+                    {
+                        label: "C",
+                        text: "ウェブアプリケーションインスタンスへのポート443でのHTTPSアウトバウンドトラフィックを許可します。",
+                        explanation: "ALBがEC2インスタンスにHTTPSトラフィックを送信するために必要です。✅ 正解",
+                        correct: true
+                    },
+                    {
+                        label: "D",
+                        text: "ウェブアプリケーションインスタンスからのポート443でのHTTPSインバウンドトラフィックを許可します。",
+                        explanation: "ALBのセキュリティグループではなく、EC2インスタンス側で設定すべきルールです。"
+                    },
+                    {
+                        label: "E",
+                        text: "ウェブアプリケーションインスタンスへのヘルスチェック用のポート8443でのHTTPSアウトバウンドトラフィックを許可します。",
+                        explanation: "ALBがEC2インスタンスに対してHTTPSヘルスチェックを実行するために必要です。✅ 正解",
+                        correct: true
+                    },
+                    {
+                        label: "F",
+                        text: "ウェブアプリケーションインスタンスからのヘルスチェック用のポート8443でのHTTPSインバウンドトラフィックを許可します。",
+                        explanation: "EC2インスタンス側のセキュリティグループで設定すべきで、ALBには不要です。"
+                    }
+                ]
+            },
+            {
+                id: 17,
+                text: "金融サービス企業は、機密性の高い金融取引を処理するアプリケーションをAWS上に立ち上げます。EC2インスタンスとAmazon RDS for MySQLを使用し、データは保存時および転送時に暗号化されている必要があります。最小限の運用オーバーヘッドが求められます。",
+                options: [
+                    {
+                        label: "A",
+                        text: "AWS KMSマネージドキーを使用してRDS for MySQLの保存時暗号化を構成し、AWS Certificate Manager（ACM）のSSL/TLS証明書で転送中の暗号化を構成します。",
+                        explanation: "RDSのネイティブKMS暗号化とACMのSSL/TLS証明書を使用。アプリケーション変更不要で運用負担が最小の最適解です。",
+                        correct: true
+                    },
+                    {
+                        label: "B",
+                        text: "AWS KMSマネージドキーを使用してRDS for MySQLの保存時暗号化を構成し、転送中の暗号化のためにIPsecトンネルを構成します。",
+                        explanation: "IPsecトンネルの設定と管理は複雑で、標準のSSL/TLSに比べて運用オーバーヘッドが増加します。"
+                    },
+                    {
+                        label: "C",
+                        text: "RDS保存前にサードパーティのアプリケーション層でデータ暗号化を実装し、ACMのSSL/TLS証明書で転送中の暗号化を構成します。",
+                        explanation: "アプリケーション層での暗号化は開発・管理負担が大きく、RDSのネイティブ暗号化より運用が複雑です。"
+                    },
+                    {
+                        label: "D",
+                        text: "AWS KMSマネージドキーを使用してRDS for MySQLの保存時暗号化を構成し、VPN接続を構成してプライベート接続で転送中データを暗号化します。",
+                        explanation: "VPNの設定・管理には追加インフラが必要で、標準SSL/TLSより運用オーバーヘッドが増加します。"
+                    }
+                ]
+            },
+            {
+                id: 21,
+                text: "ある企業は、AWS IAM Identity Centerを使用してユーザー認証を管理しています。開発、テスト、運用チームが、機密性の高い顧客データの機密性を確保しながら、Amazon RDSおよびAmazon S3に安全にアクセスする必要があります。最小権限の原則に準拠し、最小限の運用オーバーヘッドが求められます。",
+                options: [
+                    {
+                        label: "A",
+                        text: "最小権限のIAMロールを使用してすべてのチームにアクセスを付与し、各チームにチームの責任に基づいたカスタマイズされたIAMポリシーを割り当てます。",
+                        explanation: "IAM Identity Centerを活用せず、個別のロール・ポリシー管理で運用オーバーヘッドが増加します。"
+                    },
+                    {
+                        label: "B",
+                        text: "IAM Identity Centerを有効にし、RDSおよびS3への詳細なアクセスを持つパーミッションセットを作成・構成し、すべてのチームを特定のパーミッションセットを持つグループに割り当てます。",
+                        explanation: "IAM Identity Centerの集中管理とグループベースのポリシー適用で、最小権限と運用効率を両立する最適解です。",
+                        correct: true
+                    },
+                    {
+                        label: "C",
+                        text: "すべてのチームの各メンバーに個別のIAMユーザーを作成し、ロールベースパーミッションを割り当て、IAM Access Analyzerで定期的な認証情報評価を実施します。",
+                        explanation: "個々のユーザー管理やポリシー割り当てが煩雑で、IAM Identity Centerのグループ管理に比べ運用負担が大きいです。"
+                    },
+                    {
+                        label: "D",
+                        text: "AWS Organizationsを使用してチームごとに個別のアカウントを作成し、最小権限のクロスアカウントIAMロールを実装します。",
+                        explanation: "複数アカウントの設定・管理は複雑で、単一アカウント内でのIAM Identity Center管理より運用オーバーヘッドが大幅に増加します。"
+                    }
+                ]
+            },
+            {
+                id: 22,
+                text: "ある企業は、機密データファイルを含むAmazon S3バケットを持っています。オンプレミスのデータセンターで仮想マシン上で実行されるアプリケーションが、S3バケット内のファイルに一時的にアクセスする必要があります。企業は現在、AWS IAM Identity Centerを使用しています。",
+                options: [
+                    {
+                        label: "A",
+                        text: "企業のオンプレミスデータセンターのパブリックIPアドレス範囲からのアクセスを許可するS3バケットポリシーを作成します。",
+                        explanation: "IPベースの制御はセキュリティが弱く、IAM Identity Centerを活用せず、一時的な認証情報発行に対応していません。"
+                    },
+                    {
+                        label: "B",
+                        text: "IAM Roles Anywhereを使用して、IAM Identity CenterでS3バケットへのアクセスを許可するセキュリティ認証情報を取得し、AWS CLIで仮想マシンがロールを引き受けるよう構成します。",
+                        explanation: "証明書ベースの認証で短期有効の認証情報を取得し、IAM Identity Centerと統合して最小権限を実現する最適解です。",
+                        correct: true
+                    },
+                    {
+                        label: "C",
+                        text: "仮想マシンにAWS CLIをインストールし、バケットへのアクセス権を持つIAMユーザーのアクセスキーでAWS CLIを構成します。",
+                        explanation: "長期的なアクセスキー管理はセキュリティリスクが高く、IAM Identity Centerの利点を活用していません。"
+                    },
+                    {
+                        label: "D",
+                        text: "S3バケットへのアクセスを許可するIAMユーザーとポリシーを作成し、アクセスキーをAWS Secrets Managerに保存し、アプリケーション起動時に取得するよう構成します。",
+                        explanation: "長期キー管理が必要で、IAM Roles Anywhereの一時認証情報に比べセキュリティと運用効率が劣ります。"
+                    }
+                ]
+            },
+            {
+                id: 26,
+                text: "ある企業は、Amazon EC2 Linuxインスタンス上で動作するアプリケーションをAuto Scalingグループ内の複数のEC2インスタンスにデプロイする予定です。すべてのインスタンスが500 GBのEBSボリュームに保存されているデータにアクセスする必要があります。アプリケーションのコードに大きな変更を加えることなく、高可用性で耐障害性のあるソリューションが必要です。",
+                options: [
+                    {
+                        label: "A",
+                        text: "NFSサーバーソフトウェアを使用するEC2インスタンスをプロビジョニングし、単一の500 GB gp2 EBSボリュームをアタッチします。",
+                        explanation: "NFSサーバーの管理と高可用性確保に追加設定が必要で、単一インスタンス障害のリスクがあります。"
+                    },
+                    {
+                        label: "B",
+                        text: "Amazon FSx for Windows File Serverファイルシステムをプロビジョニングし、単一のアベイラビリティゾーン内でSMBファイルストアとして構成します。",
+                        explanation: "Windows環境向けでLinuxベースのEC2インスタンスに非互換、単一AZでは高可用性が不足します。"
+                    },
+                    {
+                        label: "C",
+                        text: "2つの250 GBプロビジョンドIOPS SSD EBSボリュームを持つEC2インスタンスをプロビジョニングします。",
+                        explanation: "EBSボリュームは単一インスタンスにのみアタッチ可能で、Auto Scalingグループの複数インスタンスでのデータ共有に対応できません。"
+                    },
+                    {
+                        label: "D",
+                        text: "Amazon Elastic File System（Amazon EFS）ファイルシステムを汎用パフォーマンスモードでプロビジョニングします。",
+                        explanation: "LinuxベースのEC2インスタンスで共有可能な高可用性・耐障害性のファイルシステムを提供し、Auto Scalingグループの全インスタンスがアクセス可能。アプリケーション変更が最小限の最適解です。",
+                        correct: true
+                    }
+                ]
+            },
+            {
+                id: 28,
+                text: "ある企業は、AWS Organizationsの組織単位（OU）を使用してアカウントを管理しています。Amazon EC2インスタンスに「機密（sensitive）」および「非機密（nonsensitive）」の値でdata sensitivityというタグ付けをしたいと考えています。IAMアイデンティティは、タグを削除したり、タグなしでインスタンスを作成したりできないようにする必要があります。（2つ選択）",
+                options: [
+                    {
+                        label: "A",
+                        text: "Organizationsで新しいタグポリシーを作成し、data sensitivityタグキーと許可された値を指定し、タグ値の使用をEC2インスタンスに対して強制し、タグポリシーを該当のOUにアタッチします。",
+                        explanation: "AWS Organizationsのタグポリシーでdata sensitivityタグの標準化を強制し、要件を満たします。✅ 正解",
+                        correct: true
+                    },
+                    {
+                        label: "B",
+                        text: "Organizationsで新しいサービスコントロールポリシー（SCP）を作成し、data sensitivityタグキーと必要なタグ値を指定し、タグ値の使用をEC2インスタンスに対して強制し、SCPを該当のOUにアタッチします。",
+                        explanation: "SCPはリソース操作の許可・拒否を制御するもので、タグ値の強制には適しません。"
+                    },
+                    {
+                        label: "C",
+                        text: "タグキーが指定されていない場合にインスタンスの実行を拒否するタグポリシーを作成し、アイデンティティがタグを削除できないようにする別のタグポリシーを作成し、適切なOUにアタッチします。",
+                        explanation: "タグポリシーはタグの標準化に特化しており、インスタンス実行やタグ削除の制御（IAMアクション制限）には適用できません。"
+                    },
+                    {
+                        label: "D",
+                        text: "タグキーが指定されていない場合にインスタンスの作成を拒否するサービスコントロールポリシー（SCP）を作成し、アイデンティティがタグを削除できないようにする別のSCPを作成し、適切なOUにアタッチします。",
+                        explanation: "SCPでタグなしのインスタンス作成とタグ削除を防止し、IAMアクションを制御して要件を満たします。✅ 正解",
+                        correct: true
+                    },
+                    {
+                        label: "E",
+                        text: "EC2インスタンスがdata sensitivityタグおよび指定された値を使用しているかを確認するAWS Configルールを作成し、準拠していないリソースを削除するAWS Lambda関数を構成します。",
+                        explanation: "ConfigとLambdaの設定・管理が運用オーバーヘッドを増加させ、他の選択肢に比べ最適ではありません。"
+                    }
+                ]
+            },
+            {
+                id: 29,
+                text: "ある企業は、レガシーアプリケーションをAWSに移行する計画を立てています。このアプリケーションは現在、NFS通信プロトコルを使用してオンプレミスのストレージソリューションと通信しています。アプリケーションは、NFS以外の通信プロトコルを使用するようには変更できません。",
+                options: [
+                    {
+                        label: "A",
+                        text: "AWS DataSync",
+                        explanation: "データ転送・同期を自動化するサービスですが、NFSプロトコルでの直接アプリケーションアクセスをサポートするストレージソリューションではありません。"
+                    },
+                    {
+                        label: "B",
+                        text: "Amazon Elastic Block Store (Amazon EBS)",
+                        explanation: "高性能ブロックストレージですが、単一EC2インスタンス用でNFSプロトコルをネイティブサポートしていません。"
+                    },
+                    {
+                        label: "C",
+                        text: "Amazon Elastic File System (Amazon EFS)",
+                        explanation: "NFSプロトコルをネイティブサポートするフルマネージドファイルシステムで、複数インスタンスから同時アクセス可能。レガシーアプリケーションの変更なしに移行できる最適解です。",
+                        correct: true
+                    },
+                    {
+                        label: "D",
+                        text: "Amazon EMR File System (Amazon EMRFS)",
+                        explanation: "EMRクラスタがS3をストレージとして使用するためのファイルシステムで、NFSプロトコルをサポートしていません。"
+                    }
+                ]
+            },
+            {
+                id: 33,
+                text: "ある企業は、オンプレミスのKubernetesクラスタ上のアプリケーションを、数百万人の新規顧客に対応するためにAmazon EKSクラスタに移行する必要があります。基盤となるコンピューティングインフラストラクチャを管理したくありません。最小限の運用オーバーヘッドが求められます。",
+                options: [
+                    {
+                        label: "A",
+                        text: "セルフマネージドノードを使用してコンピューティングキャパシティを提供し、新しいEKSクラスタにアプリケーションをデプロイします。",
+                        explanation: "EC2インスタンスの管理（パッチ適用、スケーリング）が必要で、基盤インフラ管理を避けたい要件に反します。"
+                    },
+                    {
+                        label: "B",
+                        text: "マネージドノードグループを使用してコンピューティングキャパシティを提供し、新しいEKSクラスタにアプリケーションをデプロイします。",
+                        explanation: "AWSが部分的に管理しますが、ノードのスケーリング設定やインスタンス管理が依然として必要で、Fargateより運用負担が大きいです。"
+                    },
+                    {
+                        label: "C",
+                        text: "AWS Fargateを使用してコンピューティングキャパシティを提供し、Fargateプロファイルを作成してアプリケーションをデプロイします。",
+                        explanation: "Fargateがサーバーレスで基盤EC2インスタンス管理を完全に排除、自動スケーリング・パッチ適用をAWSが処理。運用オーバーヘッド最小の最適解です。",
+                        correct: true
+                    },
+                    {
+                        label: "D",
+                        text: "Karpenterとマネージドノードグループを使用してコンピューティングキャパシティを提供し、新しいEKSクラスタにアプリケーションをデプロイします。",
+                        explanation: "Karpenterが効率的なノードスケーリングを提供しますが、マネージドノードグループの管理やKarpenter設定が必要で、Fargateより運用負担が大きいです。"
+                    }
+                ]
+            },
+            {
+                id: 38,
+                text: "オンラインゲーム企業は、ユーザーデータのストレージをAmazon DynamoDBに移行しています。ユーザープロフィール、実績、ゲーム内トランザクションを含むテーブルで、シームレスなゲーム体験のために堅牢で継続的に利用可能かつ耐障害性のあるDynamoDBアーキテクチャが必要です。最もコスト効率の良いソリューションが求められます。",
+                options: [
+                    {
+                        label: "A",
+                        text: "単一リージョンにDynamoDBテーブルを作成し、オンデマンドキャパシティモードを使用し、グローバルテーブルで複数リージョンにデータをレプリケートします。",
+                        explanation: "グローバルテーブルでマルチリージョン耐障害性を実現しますが、オンデマンドキャパシティモードは予測可能なゲームトラフィックではコストが高くなります。"
+                    },
+                    {
+                        label: "B",
+                        text: "DynamoDB Accelerator（DAX）を使用して頻繁にアクセスされるデータをキャッシュし、単一リージョンにテーブルをデプロイしてオートスケーリングを有効にし、手動でクロスリージョンレプリケーションを設定します。",
+                        explanation: "手動レプリケーションは運用負担が大きく、単一リージョンではリージョン障害時の継続可用性が不足、DAXの追加コストもかかります。"
+                    },
+                    {
+                        label: "C",
+                        text: "複数リージョンにDynamoDBテーブルを作成し、オンデマンドキャパシティモードを使用し、DynamoDB Streamsでリージョン間のクロスリージョンレプリケーションを行います。",
+                        explanation: "Streamsによるカスタムレプリケーションは複雑で運用負担が増加、オンデマンドモードはコストが高く、グローバルテーブルより効率が劣ります。"
+                    },
+                    {
+                        label: "D",
+                        text: "DynamoDBグローバルテーブルを使用して自動的なマルチリージョンレプリケーションを行い、複数のAWSリージョンにテーブルをデプロイし、プロビジョンドキャパシティモードとオートスケーリングを有効にします。",
+                        explanation: "グローバルテーブルで堅牢な可用性と耐障害性を提供、プロビジョンドキャパシティとオートスケーリングでゲームの予測可能なトラフィックパターンに最適化。コスト効率と要件を最も効果的に満たす最適解です。",
+                        correct: true
+                    }
+                ]
+            },
+            {
+                id: 39,
+                text: "ある企業は、オンプレミスでメディアレンダリングアプリケーションを運用し、ストレージコスト削減のためすべてのデータをAmazon S3に移行しました。オンプレミスのレンダリングアプリケーションは、ストレージへの低レイテンシアクセスを必要としています。最もコスト効率の良いストレージソリューションが求められます。",
+                options: [
+                    {
+                        label: "A",
+                        text: "Mountpoint for Amazon S3を使用して、オンプレミスアプリケーションがAmazon S3内のデータにアクセスできるようにします。",
+                        explanation: "ローカルキャッシュ機能がなく、すべてのアクセスがS3に直接リクエストされるため、低レイテンシ要件を満たすのが困難です。"
+                    },
+                    {
+                        label: "B",
+                        text: "Amazon S3 File Gatewayを構成して、オンプレミスのアプリケーションにストレージを提供します。",
+                        explanation: "S3 File Gatewayがオンプレミスで低レイテンシアクセス可能なストレージを提供し、頻繁にアクセスされるデータをローカルキャッシュして性能を維持、S3の低コストを活用する最適解です。",
+                        correct: true
+                    },
+                    {
+                        label: "C",
+                        text: "データをAmazon S3からAmazon FSx for Windows File Serverにコピーし、Amazon FSx File Gatewayを構成してオンプレミスアプリケーションにストレージを提供します。",
+                        explanation: "FSxのストレージコストはS3より大幅に高く、データコピー・同期の管理が必要で運用が複雑になります。"
+                    },
+                    {
+                        label: "D",
+                        text: "オンプレミスのファイルサーバーを設定し、Amazon S3 APIを使用してS3ストレージに接続し、アプリケーションがオンプレミスファイルサーバーからアクセスできるよう構成します。",
+                        explanation: "サーバーのハードウェア管理、OSメンテナンス、スケーラビリティ確保で運用負担が大きく、S3 API経由はキャッシュがないため低レイテンシを保証できません。"
+                    }
+                ]
+            },
+            {
+                id: 42,
+                text: "ある企業は、単一のAmazon EC2オンデマンドインスタンス上でウェブサイト解析アプリケーションをホストしています。このアプリケーションは高い耐障害性を備え、ステートレスモードで動作します。繁忙時にパフォーマンスが低下し、5xxエラーが発生しており、アプリケーションをシームレスにスケーリングする必要があります。最もコスト効率の良いソリューションが求められます。",
+                options: [
+                    {
+                        label: "A",
+                        text: "ウェブアプリケーションのAMIを作成し、2番目のEC2オンデマンドインスタンスを起動し、Application Load Balancerで2つのEC2インスタンス間で負荷を分散します。",
+                        explanation: "固定の2インスタンスでは繁忙時のスケーラビリティが限られ、オンデマンドインスタンスはコストが高く、シームレスなスケーリングができません。"
+                    },
+                    {
+                        label: "B",
+                        text: "ウェブアプリケーションのAMIを作成し、2番目のEC2オンデマンドインスタンスを起動し、Amazon Route 53の重み付きルーティングで2つのEC2インスタンス間で負荷を分散します。",
+                        explanation: "Route 53はALBより負荷分散の柔軟性が低く、固定インスタンスでは動的スケーリングができず、コストも高いです。"
+                    },
+                    {
+                        label: "C",
+                        text: "CPU使用率が75%を超えたときにインスタンスを停止してより高性能なインスタンスタイプに変更するAWS Lambda関数を作成し、CloudWatchアラームで呼び出します。",
+                        explanation: "インスタンス変更にダウンタイムが発生し、スケーラビリティを根本的に解決せず、シームレスな対応ができません。"
+                    },
+                    {
+                        label: "D",
+                        text: "ウェブアプリケーションのAMIをローンチテンプレートに適用し、Spot Fleetを使用するAuto Scalingグループを作成し、Application Load Balancerをアタッチします。",
+                        explanation: "Auto Scalingグループでトラフィックに基づく自動スケーリングを実現、Spotインスタンスでコスト最適化、ALBで負荷分散と耐障害性を確保。シームレスなスケーリングとコスト効率を最も効果的に満たす最適解です。",
+                        correct: true
+                    }
+                ]
+            },
+            {
+                id: 43,
+                text: "ある企業は、データがAmazon S3バケットに保存されており、オブジェクトは1日を通して頻繁にアクセスされます。厳格なデータ暗号化要件があり、現在AWS KMSを使用しています。AWS KMSへの追加の呼び出しを行わずに、S3オブジェクトの暗号化に関連するコストを最適化したいと考えています。",
+                options: [
+                    {
+                        label: "A",
+                        text: "Amazon S3マネージドキー（SSE-S3）を使用したサーバーサイド暗号化を適用します。",
+                        explanation: "SSE-S3はKMS呼び出し不要でコスト削減できますが、企業の厳格なKMS暗号化要件を満たせません。"
+                    },
+                    {
+                        label: "B",
+                        text: "新しいオブジェクトに対して、S3バケットキーによるAWS KMSキー（SSE-KMS）を使用したサーバーサイド暗号化を適用します。",
+                        explanation: "S3バケットキーがKMSキーをバケットレベルで使用し、データキーをキャッシュしてKMS呼び出しを大幅削減、厳格な暗号化要件を維持しつつコストを最適化する最適解です。",
+                        correct: true
+                    },
+                    {
+                        label: "C",
+                        text: "AWS KMSカスタマーマネージドキーによるクライアントサイド暗号化を適用します。",
+                        explanation: "クライアントサイド暗号化では各操作でKMS呼び出しが必要で、頻繁なアクセスでKMSコストが大幅増加します。"
+                    },
+                    {
+                        label: "D",
+                        text: "AWS KMSに保存されたお客様が用意したキー（SSE-C）を使用したサーバーサイド暗号化を適用します。",
+                        explanation: "SSE-CでKMSを使用する場合でも各操作でKMS呼び出しが発生し、キー管理の運用負担も大きくなります。"
+                    }
+                ]
+            },
+            {
+                id: 45,
+                text: "ある企業の本番環境は、月曜日から土曜日まで常時稼働、日曜日には12時間のみ稼働するAmazon EC2インスタンスで構成されています。日曜日の中断は許容できません。本番環境のコストを最適化したいと考えています。最もコスト効率の良いソリューションが求められます。",
+                options: [
+                    {
+                        label: "A",
+                        text: "日曜日の12時間稼働にスケジュールリザーブドインスタンス、月曜日から土曜日の常時稼働にスタンダードリザーブドインスタンスを購入します。",
+                        explanation: "スケジュールリザーブドインスタンスが日曜日の12時間という特定スケジュールに最適化されたコスト削減を提供し、中断不可を保証、スタンダードリザーブドインスタンスが常時稼働に適したコスト削減を実現する最適解です。",
+                        correct: true
+                    },
+                    {
+                        label: "B",
+                        text: "日曜日の12時間稼働にコンバーチブルリザーブドインスタンス、月曜日から土曜日の常時稼働にスタンダードリザーブドインスタンスを購入します。",
+                        explanation: "コンバーチブルリザーブドインスタンスは柔軟性がありますが、明確に定義されたスケジュールでは変更の必要性が低く、スケジュールリザーブドより割引率が低いです。"
+                    },
+                    {
+                        label: "C",
+                        text: "日曜日の12時間稼働にスポットインスタンス、月曜日から土曜日の常時稼働にスタンダードリザーブドインスタンスを使用します。",
+                        explanation: "スポットインスタンスは中断の可能性があり、日曜日の稼働が中断不可という要件に適合しません。"
+                    },
+                    {
+                        label: "D",
+                        text: "日曜日の12時間稼働にスポットインスタンス、月曜日から土曜日の常時稼働にコンバーチブルリザーブドインスタンスを使用します。",
+                        explanation: "スポットインスタンスの中断リスクが要件に適合せず、コンバーチブルリザーブドの割引率もスタンダードより低いです。"
+                    }
+                ]
+            },
+            {
+                id: 49,
+                text: "ある企業は、Amazon EC2インスタンス上のAmazon EKSクラスタで動作するアプリケーションを運用しています。UIがAmazon DynamoDBを使用し、データサービスがAmazon S3を使用しています。UI用のEKS PodがDynamoDBにのみアクセスでき、データサービス用のEKS PodがS3にのみアクセスできるようにする必要があります。",
+                options: [
+                    {
+                        label: "A",
+                        text: "S3およびDynamoDBアクセス用の個別のIAMポリシーを作成し、両方のポリシーをEC2インスタンスプロファイルにアタッチし、ロールベースアクセス制御（RBAC）でEKS Podごとのアクセスを制御します。",
+                        explanation: "EC2インスタンスプロファイルは全Podに同一権限を付与し、Kubernetes RBACはAWSリソースへのアクセス制御に適用できません。"
+                    },
+                    {
+                        label: "B",
+                        text: "S3およびDynamoDBアクセス用の個別のIAMポリシーを作成し、S3ポリシーをデータサービス用EKS Podに、DynamoDBポリシーをUI用EKS Podに直接アタッチします。",
+                        explanation: "EKS PodにIAMポリシーを直接アタッチすることはAWSの仕組み上サポートされておらず、技術的に実現不可能です。"
+                    },
+                    {
+                        label: "C",
+                        text: "UIおよびデータサービス用の個別のKubernetesサービスアカウントを作成してIAMロールを引き受け、データサービスアカウントにAmazonS3FullAccessポリシー、UIサービスアカウントにAmazonDynamoDBFullAccessポリシーをアタッチします。",
+                        explanation: "IAM Role for Service Accounts（IRSA）を活用してUI用PodがDynamoDBに、データサービス用PodがS3にアクセスするよう制限。Podごとの細かいIAM権限管理を可能にする最適解です。",
+                        correct: true
+                    },
+                    {
+                        label: "D",
+                        text: "UIおよびデータサービス用の個別のKubernetesサービスアカウントを作成してIAMロールを引き受け、IRSAを使用してUI用EKS PodにS3へのアクセス、データサービス用EKS PodにDynamoDBへのアクセスを提供します。",
+                        explanation: "権限割り当てが要件と逆で、UIはDynamoDBに、データサービスはS3にアクセスする必要があります。"
+                    }
+                ]
+            },
+            {
+                id: 53,
+                text: "ある企業は、モノリシックアプリケーションをAmazon EC2インスタンスとAmazon RDSに移行しました。アプリケーションは密接に結合されたモジュールを持ち、既存の設計では単一のEC2インスタンスでのみ動作可能です。ピーク使用時間帯にEC2インスタンスのCPU使用率が高く、Amazon RDSの読み取りリクエストのパフォーマンス低下と対応しています。CPU使用率を下げ、読み取りリクエストのパフォーマンスを向上させたいと考えています。",
+                options: [
+                    {
+                        label: "A",
+                        text: "EC2インスタンスをより高いCPU容量を持つインスタンスタイプにリサイズし、最小および最大サイズを1とするAuto Scalingグループを構成し、読み取りリクエスト用にRDSリードレプリカを構成します。",
+                        explanation: "より高いCPU容量でピーク時のCPU使用率を軽減、Auto Scalingグループで信頼性を向上、RDSリードレプリカで読み取りパフォーマンスを向上させる最適解です。",
+                        correct: true
+                    },
+                    {
+                        label: "B",
+                        text: "EC2インスタンスをより高いCPU容量を持つインスタンスタイプにリサイズし、最小および最大サイズを1とするAuto Scalingグループを構成し、すべての読み書きトラフィックをRDSリードレプリカにリダイレクトします。",
+                        explanation: "RDSリードレプリカは読み取り専用で、書き込みリクエストを処理できません。すべてのトラフィックをリダイレクトするとアプリケーションが機能しなくなります。"
+                    },
+                    {
+                        label: "C",
+                        text: "最小サイズ1、最大サイズ2のAuto Scalingグループを構成し、RDS DBインスタンスをより高いCPU容量を持つインスタンスタイプにリサイズします。",
+                        explanation: "アプリケーションが単一インスタンス設計のため、複数インスタンスのスケーリングがサポートされず、動作保証がありません。"
+                    },
+                    {
+                        label: "D",
+                        text: "EC2インスタンスをより高いCPU容量を持つインスタンスタイプにリサイズし、最小および最大サイズを1とするAuto Scalingグループを構成し、RDS DBインスタンスをより高いCPU容量を持つインスタンスタイプにリサイズします。",
+                        explanation: "RDSインスタンスのリサイズは全体的な性能向上に寄与しますが、読み取り特有のパフォーマンス問題にはリードレプリカの方が効率的です。"
+                    }
+                ]
+            },
+            {
+                id: 55,
+                text: "ある企業は、すべてのビジネスアプリケーションをAWSクラウドで運用し、複数のAWSアカウントを管理するためにAWS Organizationsを使用しています。ソリューションアーキテクトは、IAMユーザーに付与されているすべての許可をレビューし、必要以上の許可を持つIAMユーザーを特定する必要があります。最小限の管理オーバーヘッドが求められます。",
+                options: [
+                    {
+                        label: "A",
+                        text: "Network Access Analyzerを使用して、企業のAWSアカウント内のすべてのアクセス許可をレビューします。",
+                        explanation: "Network Access Analyzerはネットワークアクセスパス分析用で、IAMユーザーの許可やポリシーの過剰な権限分析機能はありません。"
+                    },
+                    {
+                        label: "B",
+                        text: "IAMユーザーがAWSアカウント内でリソースを作成または変更したときにアクティブになるAWS CloudWatchアラームを作成します。",
+                        explanation: "CloudWatchアラームはリアルタイム監視には有効ですが、既存のIAMポリシー分析や過剰権限の特定には適していません。"
+                    },
+                    {
+                        label: "C",
+                        text: "AWS Identity and Access Management（IAM）Access Analyzerを使用して、企業のすべてのリソースとアカウントをレビューします。",
+                        explanation: "IAM Access AnalyzerがIAMポリシーを自動分析し、過剰権限や意図しないアクセスを特定、AWS Organizationsと統合して複数アカウントを一元スキャンする最適解です。",
+                        correct: true
+                    },
+                    {
+                        label: "D",
+                        text: "Amazon Inspectorを使用して、既存のIAMポリシーの脆弱性を検出します。",
+                        explanation: "Amazon InspectorはEC2インスタンスやコンテナのセキュリティ脆弱性スキャン用で、IAMポリシーの過剰権限分析には限定的です。"
+                    }
+                ]
+            },
+            {
+                id: 57,
+                text: "ある企業は、顧客向けウェブアプリケーションをコンテナで運用しており、Amazon ECSをAWS Fargate上で使用しています。ウェブアプリケーションはリソースを多く消費し、24時間365日利用可能である必要があります。短時間の高いトラフィックバーストが予想され、ワークロードは高可用性でなければなりません。最もコスト効率の良いソリューションが求められます。",
+                options: [
+                    {
+                        label: "A",
+                        text: "Fargateを使用したECSキャパシティプロバイダを構成し、サードパーティツールで負荷テストを実施し、CloudWatchでFargateタスクを適切なサイズに調整します。",
+                        explanation: "負荷テストや手動でのタスクサイズ調整で運用負担が増加、すべてFargateでバーストトラフィックに対応するコストが高くなります。"
+                    },
+                    {
+                        label: "B",
+                        text: "通常状態用にFargate、バーストトラフィック用にFargate Spotを使用したECSキャパシティプロバイダを構成します。",
+                        explanation: "通常状態にFargateで24/7の高可用性を確保し、バーストトラフィックにFargate Spotでコストを最適化、自動スケーリングで運用負担を最小化する最適解です。",
+                        correct: true
+                    },
+                    {
+                        label: "C",
+                        text: "通常状態用にFargate Spot、バーストトラフィック用にFargateを使用したECSキャパシティプロバイダを構成します。",
+                        explanation: "Fargate Spotを通常状態に使用すると中断リスクがあり、24/7稼働要件を満たせません。コスト配分も非効率です。"
+                    },
+                    {
+                        label: "D",
+                        text: "Fargateを使用したECSキャパシティプロバイダを構成し、AWS Compute Optimizerを使用してFargateタスクを適切なサイズに調整します。",
+                        explanation: "すべてFargateでバーストトラフィックのコストが高く、Fargate Spotを活用しない場合よりコスト効率が劣ります。"
+                    }
+                ]
+            },
+            {
+                id: 60,
+                text: "ある企業は、オンプレミスのアプリケーションをAmazon EKSに移行しています。要件を満たすために、企業のVPC内でポッド用のカスタムサブネットを使用し、ポッドがポッドのVPC内で安全に通信できるようにする必要があります。",
+                options: [
+                    {
+                        label: "A",
+                        text: "AWS Transit Gatewayを構成して、Amazon EKSのポッド用のカスタムサブネット構成を直接管理します。",
+                        explanation: "Transit GatewayはVPC間のルーティングや外部ネットワーク接続用で、EKSポッドのカスタムサブネット割り当てやポッド間通信を直接管理する機能はありません。"
+                    },
+                    {
+                        label: "B",
+                        text: "企業のオンプレミスIPアドレス範囲からEKSポッドへのAWS Direct Connect接続を作成します。",
+                        explanation: "Direct Connectはオンプレミス-AWS間の専用接続用で、VPC内のポッドサブネット設定やポッド間通信のセキュリティには関係ありません。"
+                    },
+                    {
+                        label: "C",
+                        text: "Kubernetes用のAmazon VPC CNIプラグインを使用し、ポッドが使用するVPCクラスタ内にカスタムサブネットを定義します。",
+                        explanation: "Amazon VPC CNIプラグインでEKSポッドにVPCのIPアドレスを直接割り当て、カスタムサブネットでIPアドレス範囲を制御、VPCのセキュリティ機能でポッド間の安全な通信を保証する最適解です。",
+                        correct: true
+                    },
+                    {
+                        label: "D",
+                        text: "ポッドのアンチアフィニティルールを持つKubernetesネットワークポリシーを実装して、ポッドの配置をカスタムサブネット内の特定のノードに制限します。",
+                        explanation: "Kubernetesネットワークポリシーはポッド間トラフィック制御用で、サブネット割り当てやIPアドレス管理には影響しません。"
+                    }
+                ]
+            },
+            {
+                id: 61,
+                text: "ある企業は、すべてのデータをAWSが完全に管理する単一のAmazon RDS for MySQL DBインスタンスに保存するeコマースアプリケーションをホストしています。単一障害点のリスクを軽減する必要があります。最小限の実装努力が求められます。",
+                options: [
+                    {
+                        label: "A",
+                        text: "RDS DBインスタンスをマルチAZデプロイメントに変更し、次のメンテナンスウィンドウ中に変更を適用します。",
+                        explanation: "マルチAZデプロイメントで別AZにスタンバイインスタンスを自動プロビジョニング、自動フェイルオーバーで単一障害点を軽減、設定変更だけで済む最適解です。",
+                        correct: true
+                    },
+                    {
+                        label: "B",
+                        text: "現在のデータベースを新しいAmazon DynamoDBマルチAZデプロイメントに移行し、AWS DMSを使用して異種移行戦略で移行します。",
+                        explanation: "MySQL（リレーショナル）からDynamoDB（NoSQL）への移行はスキーマ再設計、アプリケーションロジック変更が必要で実装努力が大きいです。"
+                    },
+                    {
+                        label: "C",
+                        text: "マルチAZデプロイメントで新しいRDS DBインスタンスを作成し、最新のスナップショットから既存のRDSインスタンスのデータを手動で復元します。",
+                        explanation: "手動復元にはデータベースのエクスポート、インポート、整合性検証、接続先変更が必要で、直接マルチAZ変更より複雑です。"
+                    },
+                    {
+                        label: "D",
+                        text: "DBインスタンスを最小グループサイズ3のAmazon EC2 Auto Scalingグループで構成し、Route 53のシンプルルーティングですべてのDBインスタンスにリクエストを分散します。",
+                        explanation: "RDSはマネージドサービスでAuto Scalingグループで管理できず、Route 53での複数RDSインスタンス分散はRDSの運用モデルに適合しません。"
+                    }
+                ]
+            },
+            {
+                id: 63,
+                text: "ソフトウェア企業は、パブリックサブネットの単一Amazon EC2インスタンス上で動作する重要なウェブアプリケーションをアップグレードする必要があります。EC2インスタンスはMySQLデータベースを実行し、アプリケーションのDNSレコードはAmazon Route 53ゾーンで公開されています。アプリケーションをスケーラブルかつ高可用性に再構成し、MySQLの読み取りレイテンシを削減する必要があります。（2つ選択）",
+                options: [
+                    {
+                        label: "A",
+                        text: "2番目のAWSリージョンに2番目のEC2インスタンスを起動し、Route 53のフェイルオーバールーティングポリシーでトラフィックを2番目のEC2インスタンスにリダイレクトします。",
+                        explanation: "フェイルオーバールーティングは高可用性を向上させますが、単一セカンダリインスタンスではスケーラビリティが制限され、データベースの読み取りレイテンシ削減に対応していません。"
+                    },
+                    {
+                        label: "B",
+                        text: "複数のアベイラビリティゾーンにプライベートEC2インスタンスを起動するAuto Scalingグループを作成・構成し、インスタンスを新しいApplication Load Balancerの背後のターゲットグループに追加します。",
+                        explanation: "Auto Scalingでトラフィック需要に基づく自動スケーリング、複数AZ展開でAZレベル障害に対する高可用性、ALBでトラフィック分散とパフォーマンス向上を実現。✅ 正解",
+                        correct: true
+                    },
+                    {
+                        label: "C",
+                        text: "データベースをAmazon Aurora MySQLクラスタに移行し、プライマリDBインスタンスとリーダーDBインスタンスを別々のアベイラビリティゾーンに作成します。",
+                        explanation: "Aurora MySQLで高可用性とスケーラビリティ、リーダーDBインスタンスで読み取りリクエストを処理して読み取りレイテンシを削減、MySQL互換性でアプリケーション変更が最小限。✅ 正解",
+                        correct: true
+                    },
+                    {
+                        label: "D",
+                        text: "複数のAWSリージョンにプライベートEC2インスタンスを起動するAuto Scalingグループを作成・構成し、インスタンスを新しいApplication Load Balancerの背後のターゲットグループに追加します。",
+                        explanation: "クロスリージョン展開は高可用性を提供しますが、ALBは単一リージョン内で動作するため複数リージョンのトラフィック分散に追加設定が必要で、実装が複雑です。"
+                    },
+                    {
+                        label: "E",
+                        text: "データベースをクロスリージョンリードレプリカを持つAmazon Aurora MySQLクラスタに移行します。",
+                        explanation: "クロスリージョンレプリケーションはレイテンシが増加する場合があり、低レイテンシ要件に最適でなく、単一リージョン内のリーダーDBより実装努力が大きいです。"
+                    }
+                ]
+            }
+        ];
+
+        // アプリケーションの状態
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let showingExplanation = false;
+
+        // 初期化
+        function initializeApp() {
+            createProblemGrid();
+            showQuestion(currentQuestionIndex);
+            updateProgress();
+        }
+
+        // 問題選択グリッドを作成
+        function createProblemGrid() {
+            const grid = document.getElementById('problem-grid');
+            grid.innerHTML = '';
+            
+            questions.forEach((question, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'problem-btn';
+                btn.textContent = question.id;
+                btn.onclick = () => goToQuestion(index);
+                
+                if (index === currentQuestionIndex) {
+                    btn.classList.add('active');
+                }
+                
+                if (userAnswers[question.id]) {
+                    btn.classList.add('solved');
+                }
+                
+                grid.appendChild(btn);
+            });
+        }
+
+        // 特定の問題に移動
+        function goToQuestion(index) {
+            currentQuestionIndex = index;
+            showQuestion(currentQuestionIndex);
+            updateProgress();
+            createProblemGrid();
+        }
+
+        // 問題を表示
+        function showQuestion(index) {
+            const question = questions[index];
+            const card = document.getElementById('quiz-card');
+            
+            // 難易度を判定
+            const difficulty = question.options.length > 4 ? 'hard' : 'normal';
+            
+            card.innerHTML = `
+                <div class="question-header">
+                    <div class="question-number">問題 ${question.id}</div>
+                    <div class="difficulty ${difficulty}">
+                        ${difficulty === 'hard' ? '複数選択' : '単一選択'}
+                    </div>
+                </div>
+                
+                <div class="question-text">${question.text}</div>
+                
+                <div class="options" id="options">
+                    ${question.options.map((option, optIndex) => `
+                        <div class="option" onclick="selectOption(${optIndex})" data-option="${optIndex}">
+                            <div class="option-label">${option.label}</div>
+                            <div class="option-text">${option.text}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="controls">
+                    <button class="btn" onclick="showExplanation()">🔍 解説を見る</button>
+                    <button class="btn secondary" onclick="resetQuestion()">🔄 リセット</button>
+                </div>
+                
+                <div class="explanation" id="explanation">
+                    <h3>📚 詳細解説</h3>
+                    <div class="explanation-content" id="explanation-content"></div>
+                </div>
+            `;
+            
+            // 既に回答済みの場合は選択状態を復元
+            if (userAnswers[question.id]) {
+                const selectedOptions = userAnswers[question.id];
+                selectedOptions.forEach(optIndex => {
+                    const optionElement = document.querySelector(`[data-option="${optIndex}"]`);
+                    if (optionElement) {
+                        optionElement.classList.add('user-selected');
+                    }
+                });
+            }
+            
+            showingExplanation = false;
+            updateNavigationButtons();
+        }
+
+        // 選択肢を選択
+        function selectOption(optionIndex) {
+            if (showingExplanation) return;
+            
+            const question = questions[currentQuestionIndex];
+            const optionElement = document.querySelector(`[data-option="${optionIndex}"]`);
+            
+            if (!userAnswers[question.id]) {
+                userAnswers[question.id] = [];
+            }
+            
+            // 複数選択問題かどうかを判定
+            const isMultipleChoice = question.options.filter(opt => opt.correct).length > 1;
+            
+            if (isMultipleChoice) {
+                // 複数選択の場合
+                if (userAnswers[question.id].includes(optionIndex)) {
+                    // 既に選択済みの場合は選択解除
+                    userAnswers[question.id] = userAnswers[question.id].filter(i => i !== optionIndex);
+                    optionElement.classList.remove('user-selected');
+                } else {
+                    // 新しく選択
+                    userAnswers[question.id].push(optionIndex);
+                    optionElement.classList.add('user-selected');
+                }
+            } else {
+                // 単一選択の場合
+                // 他の選択肢の選択を解除
+                document.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('user-selected');
+                });
+                
+                userAnswers[question.id] = [optionIndex];
+                optionElement.classList.add('user-selected');
+            }
+            
+            updateProgress();
+            createProblemGrid();
+        }
+
+        // 解説を表示
+        function showExplanation() {
+            const question = questions[currentQuestionIndex];
+            const explanationDiv = document.getElementById('explanation');
+            const explanationContent = document.getElementById('explanation-content');
+            
+            // 正解・不正解をマーク
+            question.options.forEach((option, index) => {
+                const optionElement = document.querySelector(`[data-option="${index}"]`);
+                if (option.correct) {
+                    optionElement.classList.add('correct');
+                } else if (userAnswers[question.id] && userAnswers[question.id].includes(index)) {
+                    optionElement.classList.add('incorrect');
+                }
+            });
+            
+            // 解説内容を作成
+            let explanationHTML = '';
+            question.options.forEach((option, index) => {
+                const status = option.correct ? '✅ 正解' : '❌ 不正解';
+                const userSelected = userAnswers[question.id] && userAnswers[question.id].includes(index) ? ' 👆 あなたの選択' : '';
+                
+                explanationHTML += `
+                    <div style="margin-bottom: 20px; padding: 15px; border-radius: 8px; ${option.correct ? 'background: #e8f5e8; border-left: 4px solid #28a745;' : 'background: #f8f9fa; border-left: 4px solid #6c757d;'}">
+                        <h4 style="margin-bottom: 10px; color: ${option.correct ? '#155724' : '#495057'};">
+                            ${option.label}: ${status}${userSelected}
+                        </h4>
+                        <p style="margin-bottom: 8px; font-weight: bold;">${option.text}</p>
+                        <p style="margin: 0; line-height: 1.5;">${option.explanation}</p>
+                    </div>
+                `;
+            });
+            
+            explanationContent.innerHTML = explanationHTML;
+            explanationDiv.classList.add('show');
+            showingExplanation = true;
+            
+            // 選択肢のクリックを無効化
+            document.querySelectorAll('.option').forEach(option => {
+                option.style.pointerEvents = 'none';
+            });
+        }
+
+        // 問題をリセット
+        function resetQuestion() {
+            const question = questions[currentQuestionIndex];
+            delete userAnswers[question.id];
+            showQuestion(currentQuestionIndex);
+            updateProgress();
+            createProblemGrid();
+        }
+
+        // 前の問題
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion(currentQuestionIndex);
+                updateProgress();
+                createProblemGrid();
+            }
+        }
+
+        // 次の問題
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                showQuestion(currentQuestionIndex);
+                updateProgress();
+                createProblemGrid();
+            }
+        }
+
+        // ナビゲーションボタンの状態を更新
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            
+            prevBtn.disabled = currentQuestionIndex === 0;
+            nextBtn.disabled = currentQuestionIndex === questions.length - 1;
+            
+            if (prevBtn.disabled) {
+                prevBtn.style.opacity = '0.5';
+                prevBtn.style.cursor = 'not-allowed';
+            } else {
+                prevBtn.style.opacity = '1';
+                prevBtn.style.cursor = 'pointer';
+            }
+            
+            if (nextBtn.disabled) {
+                nextBtn.style.opacity = '0.5';
+                nextBtn.style.cursor = 'not-allowed';
+            } else {
+                nextBtn.style.opacity = '1';
+                nextBtn.style.cursor = 'pointer';
+            }
+        }
+
+        // 進捗を更新
+        function updateProgress() {
+            const answeredCount = Object.keys(userAnswers).length;
+            let correctCount = 0;
+            
+            // 正解数を計算
+            Object.keys(userAnswers).forEach(questionId => {
+                const question = questions.find(q => q.id == questionId);
+                if (question) {
+                    const userAnswerIndices = userAnswers[questionId];
+                    const correctIndices = question.options
+                        .map((opt, index) => opt.correct ? index : -1)
+                        .filter(index => index !== -1);
+                    
+                    // 配列を比較（順序は関係なし）
+                    const userSet = new Set(userAnswerIndices);
+                    const correctSet = new Set(correctIndices);
+                    
+                    if (userSet.size === correctSet.size && [...userSet].every(x => correctSet.has(x))) {
+                        correctCount++;
+                    }
+                }
+            });
+            
+            document.getElementById('correct-count').textContent = correctCount;
+            document.getElementById('answered-count').textContent = answeredCount;
+            document.getElementById('total-count').textContent = questions.length;
+            
+            const progressPercent = (answeredCount / questions.length) * 100;
+            document.getElementById('progress-fill').style.width = progressPercent + '%';
+        }
+
+        // アプリケーション初期化
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>
